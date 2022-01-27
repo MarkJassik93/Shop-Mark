@@ -10,8 +10,8 @@ using Shop.Data;
 namespace Shop.Data.Migrations
 {
     [DbContext(typeof(ShopDbContext))]
-    [Migration("20220127163211_Init")]
-    partial class Init
+    [Migration("20220127170737_Cars")]
+    partial class Cars
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -217,10 +217,45 @@ namespace Shop.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Shop.Core.Domain.Cars", b =>
+                {
+                    b.Property<Guid?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("Hind")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Kaal")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Mudel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Seeria")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cars");
+                });
+
             modelBuilder.Entity("Shop.Core.Domain.ExistingFilePath", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CarId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CarsId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FilePath")
@@ -230,6 +265,8 @@ namespace Shop.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CarsId");
 
                     b.HasIndex("ProductId");
 
@@ -318,6 +355,10 @@ namespace Shop.Data.Migrations
 
             modelBuilder.Entity("Shop.Core.Domain.ExistingFilePath", b =>
                 {
+                    b.HasOne("Shop.Core.Domain.Cars", null)
+                        .WithMany("ExistingFilePaths")
+                        .HasForeignKey("CarsId");
+
                     b.HasOne("Shop.Core.Domain.Product", null)
                         .WithMany("ExistingFilePaths")
                         .HasForeignKey("ProductId");

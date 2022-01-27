@@ -47,6 +47,23 @@ namespace Shop.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cars",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Mudel = table.Column<string>(nullable: true),
+                    Seeria = table.Column<string>(nullable: true),
+                    Hind = table.Column<double>(nullable: false),
+                    Kaal = table.Column<double>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cars", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Product",
                 columns: table => new
                 {
@@ -175,11 +192,19 @@ namespace Shop.Data.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     FilePath = table.Column<string>(nullable: true),
-                    ProductId = table.Column<Guid>(nullable: true)
+                    ProductId = table.Column<Guid>(nullable: true),
+                    CarId = table.Column<Guid>(nullable: true),
+                    CarsId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ExistingFilePath", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ExistingFilePath_Cars_CarsId",
+                        column: x => x.CarsId,
+                        principalTable: "Cars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ExistingFilePath_Product_ProductId",
                         column: x => x.ProductId,
@@ -228,6 +253,11 @@ namespace Shop.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ExistingFilePath_CarsId",
+                table: "ExistingFilePath",
+                column: "CarsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ExistingFilePath_ProductId",
                 table: "ExistingFilePath",
                 column: "ProductId");
@@ -258,6 +288,9 @@ namespace Shop.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Cars");
 
             migrationBuilder.DropTable(
                 name: "Product");
